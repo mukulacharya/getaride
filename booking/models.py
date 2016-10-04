@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
 
-from django.contrib.auth.models import User, AbstractUser
+from django.contrib.auth.models import User, AbstractBaseUser
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 # Create your models here.
 
@@ -25,8 +26,13 @@ class VehicleInformation(models.Model):
         return "{} - {}".format(self.id, self.vehicle_reg_no)
 
 
-class Person(AbstractUser):
+class Person(AbstractBaseUser):
+    email = models.EmailField(_('Email Address'), unique=True, db_index=True, null=False, blank=False)
+    first_name = models.CharField(null=False, blank=False, max_length=20)
+    last_name = models.CharField(null=False, blank=False, max_length=20)
+    dob = models.DateField(null=True, blank=True)
+    contact_number = models.CharField(_("Mobile Number"), max_length=20)
     vehicle_info = models.ForeignKey(VehicleInformation, null=True, blank=True)
 
     def __unicode__(self):
-        return "{} - {}".format(self.id, self.username)
+        return "{} - {}".format(self.id, self.email)
